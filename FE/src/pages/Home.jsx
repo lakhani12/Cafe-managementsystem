@@ -1,10 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
+import { productsAPI } from '../services/api';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
-import { Coffee, Clock, Star, Users, ArrowRight } from 'lucide-react';
+import { Coffee, Clock, Star, Users, ArrowRight, ShoppingCart } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 const Home = () => {
+  // Fetch products for popular items section
+  const { data: products, isLoading } = useQuery({
+    queryKey: ['products'],
+    queryFn: () => productsAPI.getAll({ limit: 6 }),
+  });
+
   const features = [
     {
       icon: <Coffee size={48} className="text-cafe-primary" />,
@@ -28,26 +37,10 @@ const Home = () => {
     }
   ];
 
-  const popularItems = [
-    {
-      name: "Cappuccino",
-      price: 4.99,
-      image: "https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=300&h=200&fit=crop",
-      description: "Rich espresso with steamed milk and foam"
-    },
-    {
-      name: "Chocolate Croissant",
-      price: 3.49,
-      image: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=300&h=200&fit=crop",
-      description: "Buttery pastry filled with rich chocolate"
-    },
-    {
-      name: "Avocado Toast",
-      price: 8.99,
-      image: "https://images.unsplash.com/photo-1541519227354-08fa5d50c44d?w=300&h=200&fit=crop",
-      description: "Fresh avocado on artisan bread with herbs"
-    }
-  ];
+  const handleAddToCart = (product) => {
+    // This would typically add to cart via API
+    toast.success(`${product.title} added to cart!`);
+  };
 
   return (
     <div className="home-page">
@@ -115,32 +108,56 @@ const Home = () => {
             <h2 className="display-5 fw-bold text-cafe-primary mb-3">Popular Items</h2>
             <p className="lead text-muted">Customer favorites you'll love</p>
           </div>
-          <div className="row g-4">
-            {popularItems.map((item, index) => (
-              <div key={index} className="col-lg-4 col-md-6">
-                <Card className="card-cafe h-100 border-0 overflow-hidden">
-                  <div className="position-relative">
-                    <img 
-                      src={item.image} 
-                      alt={item.name}
-                      className="card-img-top"
-                      style={{ height: '200px', objectFit: 'cover' }}
-                    />
-                    <div className="position-absolute top-0 end-0 m-3">
-                      <span className="badge bg-cafe-primary">${item.price}</span>
-                    </div>
-                  </div>
-                  <CardContent className="p-4">
-                    <h5 className="fw-bold text-cafe-primary mb-2">{item.name}</h5>
-                    <p className="text-muted mb-3">{item.description}</p>
-                    <Button className="btn-cafe-primary w-100">
-                      Add to Cart
-                    </Button>
-                  </CardContent>
-                </Card>
+          
+          {isLoading ? (
+            <div className="text-center py-5">
+              <div className="spinner-border text-cafe-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
               </div>
-            ))}
-          </div>
+            </div>
+          ) : (
+            <div className="row g-4">
+              {products?.data?.products?.slice(0, 6).map((product) => (
+                <div key={product._id} className="col-lg-4 col-md-6">
+                  <Card className="card-cafe h-100 border-0 overflow-hidden">
+                    <div className="position-relative">
+                      <img 
+                        src={product.images?.[0] || "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=300&h=200&fit=crop"} 
+                        alt={product.title}
+                        className="card-img-top"
+                        style={{ height: '200px', objectFit: 'cover' }}
+                      />
+                      <div className="position-absolute top-0 end-0 m-3">
+                        <span className="badge bg-cafe-primary">${product.price.toFixed(2)}</span>
+                      </div>
+                      {product.inStock === 0 && (
+                        <div className="position-absolute top-0 start-0 m-3">
+                          <span className="badge bg-danger">Out of Stock</span>
+                        </div>
+                      )}
+                    </div>
+                    <CardContent className="p-4">
+                      <h5 className="fw-bold text-cafe-primary mb-2">{product.title}</h5>
+                      <p className="text-muted mb-3">{product.description}</p>
+                      <div className="d-flex align-items-center justify-content-between mb-3">
+                        <span className="text-muted small">Category: {product.category}</span>
+                        <span className="text-muted small">Stock: {product.inStock}</span>
+                      </div>
+                      <Button 
+                        className="btn-cafe-primary w-100"
+                        onClick={() => handleAddToCart(product)}
+                        disabled={product.inStock === 0}
+                      >
+                        <ShoppingCart size={16} className="me-2" />
+                        {product.inStock === 0 ? 'Out of Stock' : 'Add to Cart'}
+                      </Button>
+                    </CardContent>
+                  </Card>
+                </div>
+              ))}
+            </div>
+          )}
+          
           <div className="text-center mt-5">
             <Button asChild size="lg" className="btn-cafe-secondary">
               <Link to="/menu">View Full Menu</Link>
