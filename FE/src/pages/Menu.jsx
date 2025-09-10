@@ -36,7 +36,13 @@ const Menu = () => {
     }
   }, [cart]);
 
-  const categories = ['all', 'coffee', 'tea', 'pastries', 'sandwiches', 'salads'];
+  const categories = [
+    { id: 'all', name: 'All Items', icon: '🍽️' },
+    { id: 'beverage', name: 'Coffee & Tea', icon: '☕' },
+    { id: 'bakery', name: 'Pastries', icon: '🥐' },
+    { id: 'food', name: 'Sandwiches', icon: '🥪' },
+    { id: 'salad', name: 'Salads', icon: '🥗' }
+  ];
 
   const filteredProducts = products?.data?.products?.filter(product => {
     const matchesSearch = product.title.toLowerCase().includes(searchTerm.toLowerCase());
@@ -121,7 +127,7 @@ const Menu = () => {
 
         {/* Search and Filters */}
         <div className="row mb-5">
-          <div className="col-lg-6 mb-3">
+          <div className="col-lg-6 mb-4">
             <div className="position-relative">
               <Search className="position-absolute top-50 start-0 translate-middle-y ms-3 text-muted" size={20} />
               <Input
@@ -133,20 +139,24 @@ const Menu = () => {
               />
             </div>
           </div>
-          <div className="col-lg-6">
-            <div className="d-flex flex-wrap gap-2">
-              {categories.map(category => (
-                <Button
-                  key={category}
-                  variant={selectedCategory === category ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedCategory(category)}
-                  className={selectedCategory === category ? "btn-cafe-primary" : ""}
-                >
-                  {category.charAt(0).toUpperCase() + category.slice(1)}
-                </Button>
-              ))}
-            </div>
+        </div>
+
+        {/* Category Tabs */}
+        <div className="mb-5">
+          <div className="d-flex flex-wrap justify-content-center gap-2">
+            {categories.map(category => (
+              <Button
+                key={category.id}
+                variant={selectedCategory === category.id ? "default" : "outline"}
+                size="lg"
+                onClick={() => setSelectedCategory(category.id)}
+                className={`px-4 py-3 ${selectedCategory === category.id ? "btn-cafe-primary" : "btn-outline-cafe-primary"}`}
+                style={{ minWidth: '140px' }}
+              >
+                <span className="me-2" style={{ fontSize: '1.2em' }}>{category.icon}</span>
+                {category.name}
+              </Button>
+            ))}
           </div>
         </div>
 
