@@ -39,7 +39,7 @@ export const updateCartItem = async (req, res, next) => {
 		const { itemId } = req.params;
 		const { quantity } = req.body;
 		const cart = await getOrCreateCart(req.user._id);
-		const item = cart.items.id(itemId);
+		const item = cart.items.find(item => item._id.toString() === itemId);
 		if (!item) throw createError(404, "Item not found");
 		item.quantity = quantity;
 		cart.recalculate();
@@ -54,9 +54,9 @@ export const removeCartItem = async (req, res, next) => {
 	try {
 		const { itemId } = req.params;
 		const cart = await getOrCreateCart(req.user._id);
-		const item = cart.items.id(itemId);
-		if (!item) throw createError(404, "Item not found");
-		item.remove();
+		const itemIndex = cart.items.findIndex(item => item._id.toString() === itemId);
+		if (itemIndex === -1) throw createError(404, "Item not found");
+		cart.items.splice(itemIndex, 1);
 		cart.recalculate();
 		await cart.save();
 		res.json({ success: true, cart });

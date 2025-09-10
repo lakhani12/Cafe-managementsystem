@@ -80,7 +80,7 @@ const Cart = () => {
   };
 
   const handleCheckout = () => {
-    if (cart?.data?.items?.length === 0) {
+    if (cartItems.length === 0) {
       toast.error('Your cart is empty');
       return;
     }
@@ -99,8 +99,8 @@ const Cart = () => {
     );
   }
 
-  const cartItems = cart?.data?.items || [];
-  const subtotal = cart?.data?.subtotal || 0;
+  const cartItems = cart?.data?.cart?.items || cart?.data?.items || [];
+  const subtotal = cart?.data?.cart?.subtotal || cart?.data?.subtotal || 0;
   const tax = subtotal * 0.08; // 8% tax
   const total = subtotal + tax;
 

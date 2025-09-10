@@ -6,7 +6,7 @@ const cartItemSchema = new mongoose.Schema(
 		quantity: { type: Number, required: true, min: 1 },
 		price: { type: Number, required: true, min: 0 },
 	},
-	{ _id: false }
+	{ _id: true }
 );
 
 const cartSchema = new mongoose.Schema(
