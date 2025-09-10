@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { productsAPI, cartAPI } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '../components/ui/button';
@@ -14,6 +14,7 @@ const Menu = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [cartItems, setCartItems] = useState({});
+  const queryClient = useQueryClient();
 
   const { data: products, isLoading, error } = useQuery({
     queryKey: ['products', searchTerm],
@@ -27,12 +28,15 @@ const Menu = () => {
   });
 
   useEffect(() => {
-    if (cart?.data?.items) {
+    const cartItems = cart?.data?.cart?.items || cart?.data?.items || [];
+    if (cartItems.length > 0) {
       const itemsMap = {};
-      cart.data.items.forEach(item => {
+      cartItems.forEach(item => {
         itemsMap[item.product._id] = item.quantity;
       });
       setCartItems(itemsMap);
+    } else {
+      setCartItems({});
     }
   }, [cart]);
 
@@ -58,12 +62,14 @@ const Menu = () => {
 
     try {
       await cartAPI.addItem(productId, 1);
+      queryClient.invalidateQueries({ queryKey: ['cart'] });
       setCartItems(prev => ({
         ...prev,
         [productId]: (prev[productId] || 0) + 1
       }));
       toast.success('Added to cart!');
-    } catch (error) {
+    } catch (err) {
+      console.error('Add to cart error:', err);
       toast.error('Failed to add to cart');
     }
   };
@@ -72,24 +78,33 @@ const Menu = () => {
     if (!user) return;
 
     try {
-      if (newQuantity === 0) {
-        // Find cart item ID and remove
-        const cartItem = cart?.data?.items?.find(item => item.product._id === productId);
-        if (cartItem) {
-          await cartAPI.removeItem(cartItem._id);
-        }
-      } else {
-        // Find cart item ID and update
-        const cartItem = cart?.data?.items?.find(item => item.product._id === productId);
-        if (cartItem) {
-          await cartAPI.updateItem(cartItem._id, newQuantity);
-        }
+      const cartItems = cart?.data?.cart?.items || cart?.data?.items || [];
+      const cartItem = cartItems.find(item => item.product._id === productId);
+      
+      if (!cartItem) {
+        toast.error('Item not found in cart');
+        return;
       }
-      setCartItems(prev => ({
-        ...prev,
-        [productId]: newQuantity
-      }));
-    } catch (error) {
+
+      if (newQuantity === 0) {
+        await cartAPI.removeItem(cartItem._id);
+        setCartItems(prev => {
+          const newItems = { ...prev };
+          delete newItems[productId];
+          return newItems;
+        });
+      } else {
+        await cartAPI.updateItem(cartItem._id, newQuantity);
+        setCartItems(prev => ({
+          ...prev,
+          [productId]: newQuantity
+        }));
+      }
+      
+      queryClient.invalidateQueries({ queryKey: ['cart'] });
+      toast.success('Cart updated!');
+    } catch (err) {
+      console.error('Update cart error:', err);
       toast.error('Failed to update cart');
     }
   };
@@ -259,7 +274,9 @@ const Menu = () => {
                 <div className="d-flex align-items-center justify-content-between">
                   <div>
                     <h5 className="mb-1">Items in Cart: {Object.values(cartItems).reduce((a, b) => a + b, 0)}</h5>
-                    <p className="text-muted mb-0">Total: ${cart?.data?.subtotal?.toFixed(2) || '0.00'}</p>
+                    <p className="text-muted mb-0">
+                      Total: ${(cart?.data?.cart?.subtotal || cart?.data?.subtotal || 0).toFixed(2)}
+                    </p>
                   </div>
                   <Button asChild className="btn-cafe-primary">
                     <a href="/cart">View Cart</a>

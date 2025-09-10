@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { ordersAPI, productsAPI } from '../../services/api';
+import { adminAPI } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '../../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
 import { Badge } from '../../components/ui/badge';
+import ProductManagement from '../../components/admin/ProductManagement';
+import UserManagement from '../../components/admin/UserManagement';
+import OrderManagement from '../../components/admin/OrderManagement';
 import { 
   BarChart3, 
   Package, 
@@ -16,7 +19,9 @@ import {
   Plus,
   Edit,
   Trash2,
-  Eye
+  Eye,
+  ShoppingCart,
+  TrendingUp
 } from 'lucide-react';
 import ProtectedRoute from '../../components/ProtectedRoute';
 
@@ -24,24 +29,26 @@ const AdminDashboard = () => {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
 
-  const { data: orders } = useQuery({
-    queryKey: ['orders', 'admin'],
-    queryFn: () => ordersAPI.getAll(),
+  const { data: dashboardData, isLoading: dashboardLoading } = useQuery({
+    queryKey: ['admin-dashboard'],
+    queryFn: () => adminAPI.getDashboardStats(),
   });
 
-  const { data: products } = useQuery({
-    queryKey: ['products'],
-    queryFn: () => productsAPI.getAll(),
+  const { data: ordersData, isLoading: ordersLoading } = useQuery({
+    queryKey: ['admin-orders'],
+    queryFn: () => adminAPI.getOrders({ limit: 50 }),
   });
 
-  const orderList = orders?.data?.orders || [];
-  const productList = products?.data?.products || [];
+  const { data: productsData, isLoading: productsLoading } = useQuery({
+    queryKey: ['admin-products'],
+    queryFn: () => adminAPI.getProducts({ limit: 50 }),
+  });
 
-  // Calculate stats
-  const totalOrders = orderList.length;
-  const pendingOrders = orderList.filter(order => order.status === 'pending').length;
-  const completedOrders = orderList.filter(order => order.status === 'completed').length;
-  const totalRevenue = orderList.reduce((sum, order) => sum + order.total, 0);
+  const stats = dashboardData?.data?.stats || {};
+  const orderList = ordersData?.data?.orders || [];
+  const productList = productsData?.data?.products || [];
+  const recentOrders = dashboardData?.data?.recentOrders || [];
+  const topProducts = dashboardData?.data?.topProducts || [];
 
   const getStatusBadge = (status) => {
     const baseClass = 'order-status';
@@ -72,8 +79,10 @@ const AdminDashboard = () => {
 
   const tabs = [
     { id: 'overview', label: 'Overview', icon: BarChart3 },
-    { id: 'orders', label: 'Orders', icon: Package },
+    { id: 'orders', label: 'Orders', icon: ShoppingCart },
     { id: 'products', label: 'Products', icon: Package },
+    { id: 'users', label: 'Users', icon: Users },
+    { id: 'reports', label: 'Reports', icon: TrendingUp },
   ];
 
   return (
@@ -104,7 +113,7 @@ const AdminDashboard = () => {
                       <Package size={24} className="text-white" />
                     </div>
                     <div>
-                      <h3 className="fw-bold text-cafe-primary mb-1">{totalOrders}</h3>
+                      <h3 className="fw-bold text-cafe-primary mb-1">{stats.totalOrders || 0}</h3>
                       <p className="text-muted mb-0">Total Orders</p>
                     </div>
                   </div>
@@ -119,7 +128,7 @@ const AdminDashboard = () => {
                       <Clock size={24} className="text-white" />
                     </div>
                     <div>
-                      <h3 className="fw-bold text-cafe-primary mb-1">{pendingOrders}</h3>
+                      <h3 className="fw-bold text-cafe-primary mb-1">{orderList.filter(order => order.status === 'pending').length}</h3>
                       <p className="text-muted mb-0">Pending Orders</p>
                     </div>
                   </div>
@@ -134,7 +143,7 @@ const AdminDashboard = () => {
                       <CheckCircle size={24} className="text-white" />
                     </div>
                     <div>
-                      <h3 className="fw-bold text-cafe-primary mb-1">{completedOrders}</h3>
+                      <h3 className="fw-bold text-cafe-primary mb-1">{orderList.filter(order => order.status === 'completed').length}</h3>
                       <p className="text-muted mb-0">Completed</p>
                     </div>
                   </div>
@@ -149,7 +158,7 @@ const AdminDashboard = () => {
                       <DollarSign size={24} className="text-white" />
                     </div>
                     <div>
-                      <h3 className="fw-bold text-cafe-primary mb-1">${totalRevenue.toFixed(2)}</h3>
+                      <h3 className="fw-bold text-cafe-primary mb-1">${(stats.totalRevenue || 0).toFixed(2)}</h3>
                       <p className="text-muted mb-0">Total Revenue</p>
                     </div>
                   </div>
@@ -185,12 +194,12 @@ const AdminDashboard = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3">
-                      {orderList.slice(0, 5).map(order => (
+                      {recentOrders.map(order => (
                         <div key={order._id} className="d-flex justify-content-between align-items-center p-3 border rounded">
                           <div>
                             <h6 className="mb-1">Order #{order._id.slice(-8).toUpperCase()}</h6>
                             <p className="text-muted small mb-0">
-                              {order.user.name} • {formatDate(order.createdAt)}
+                              {order.user?.name || 'Unknown User'} • {formatDate(order.createdAt)}
                             </p>
                           </div>
                           <div className="text-end">
@@ -212,15 +221,27 @@ const AdminDashboard = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="d-grid gap-2">
-                      <Button variant="outline" className="text-start">
+                      <Button 
+                        variant="outline" 
+                        className="text-start"
+                        onClick={() => setActiveTab('products')}
+                      >
                         <Plus size={16} className="me-2" />
                         Add New Product
                       </Button>
-                      <Button variant="outline" className="text-start">
+                      <Button 
+                        variant="outline" 
+                        className="text-start"
+                        onClick={() => setActiveTab('users')}
+                      >
                         <Users size={16} className="me-2" />
                         Manage Users
                       </Button>
-                      <Button variant="outline" className="text-start">
+                      <Button 
+                        variant="outline" 
+                        className="text-start"
+                        onClick={() => setActiveTab('reports')}
+                      >
                         <BarChart3 size={16} className="me-2" />
                         View Reports
                       </Button>
@@ -231,102 +252,18 @@ const AdminDashboard = () => {
             </div>
           )}
 
-          {activeTab === 'orders' && (
+          {activeTab === 'orders' && <OrderManagement />}
+          {activeTab === 'products' && <ProductManagement />}
+          {activeTab === 'users' && <UserManagement />}
+          {activeTab === 'reports' && (
             <Card className="card-cafe">
               <CardHeader>
-                <CardTitle>All Orders</CardTitle>
+                <CardTitle>Reports & Analytics</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="table-responsive">
-                  <table className="table table-hover">
-                    <thead>
-                      <tr>
-                        <th>Order ID</th>
-                        <th>Customer</th>
-                        <th>Items</th>
-                        <th>Total</th>
-                        <th>Status</th>
-                        <th>Date</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {orderList.map(order => (
-                        <tr key={order._id}>
-                          <td>#{order._id.slice(-8).toUpperCase()}</td>
-                          <td>{order.user.name}</td>
-                          <td>{order.items.length} items</td>
-                          <td>${order.total.toFixed(2)}</td>
-                          <td>
-                            <span className={getStatusBadge(order.status)}>
-                              {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                            </span>
-                          </td>
-                          <td>{formatDate(order.createdAt)}</td>
-                          <td>
-                            <div className="d-flex gap-1">
-                              <Button size="sm" variant="outline">
-                                <Eye size={14} />
-                              </Button>
-                              <Button size="sm" variant="outline">
-                                <Edit size={14} />
-                              </Button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {activeTab === 'products' && (
-            <Card className="card-cafe">
-              <CardHeader className="d-flex justify-content-between align-items-center">
-                <CardTitle>Products</CardTitle>
-                <Button className="btn-cafe-primary">
-                  <Plus size={16} className="me-2" />
-                  Add Product
-                </Button>
-              </CardHeader>
-              <CardContent>
-                <div className="row g-4">
-                  {productList.map(product => (
-                    <div key={product._id} className="col-lg-4 col-md-6">
-                      <Card className="card-cafe">
-                        <div className="position-relative">
-                          <img
-                            src={product.images?.[0] || "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=300&h=200&fit=crop"}
-                            alt={product.title}
-                            className="card-img-top"
-                            style={{ height: '150px', objectFit: 'cover' }}
-                          />
-                          <div className="position-absolute top-0 end-0 m-2">
-                            <Badge variant="secondary">${product.price}</Badge>
-                          </div>
-                        </div>
-                        <CardContent className="p-3">
-                          <h6 className="fw-bold text-cafe-primary mb-2">{product.title}</h6>
-                          <p className="text-muted small mb-3">{product.description}</p>
-                          <div className="d-flex justify-content-between align-items-center">
-                            <span className="text-muted small">
-                              Stock: {product.inStock}
-                            </span>
-                            <div className="d-flex gap-1">
-                              <Button size="sm" variant="outline">
-                                <Edit size={14} />
-                              </Button>
-                              <Button size="sm" variant="outline" className="text-danger">
-                                <Trash2 size={14} />
-                              </Button>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  ))}
+                <div className="text-center py-5">
+                  <h5 className="text-muted">Reports Coming Soon</h5>
+                  <p className="text-muted">Advanced analytics and reporting features will be available here.</p>
                 </div>
               </CardContent>
             </Card>
