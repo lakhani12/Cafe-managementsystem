@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { Badge } from '../ui/badge';
@@ -7,11 +7,25 @@ import { Avatar, AvatarFallback } from '../ui/avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../ui/dropdown-menu';
 import { ShoppingCart, User, LogOut, Coffee, Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useQuery } from '@tanstack/react-query';
+import { cartAPI } from '../../services/api';
 
 const Navbar = () => {
   const { user, logout, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const { data: cartData } = useQuery({
+    queryKey: ['cart'],
+    queryFn: () => cartAPI.get(),
+    enabled: !!user,
+    staleTime: 30_000,
+  });
+
+  const cartCount = useMemo(() => {
+    const items = cartData?.data?.cart?.items || cartData?.data?.items || [];
+    return items.reduce((sum, item) => sum + (item.quantity || 0), 0);
+  }, [cartData]);
 
   const handleLogout = () => {
     logout();
@@ -63,9 +77,13 @@ const Navbar = () => {
           <div className="hidden md:flex items-center gap-3">
             {user ? (
               <>
-                <Link to="/cart" className="relative inline-flex items-center justify-center text-white hover:text-white/90">
+                <Link to="/cart" className="relative inline-flex items-center justify-center text-white hover:text-white/90" aria-label={`Cart${cartCount ? ` (${cartCount})` : ''}`}>
                   <ShoppingCart className="h-5 w-5" />
-                  <Badge variant="secondary" className="absolute -top-2 -right-2">0</Badge>
+                  {cartCount > 0 && (
+                    <Badge variant="secondary" className="absolute -top-2 -right-2 min-w-[18px] h-[18px] p-0 text-[11px] flex items-center justify-center">
+                      {cartCount}
+                    </Badge>
+                  )}
                 </Link>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -144,9 +162,13 @@ const Navbar = () => {
             </div>
 
             <div className="flex items-center gap-3 pt-2">
-              <Link to="/cart" className="relative inline-flex items-center justify-center" onClick={() => setIsMobileMenuOpen(false)}>
+              <Link to="/cart" className="relative inline-flex items-center justify-center" onClick={() => setIsMobileMenuOpen(false)} aria-label={`Cart${cartCount ? ` (${cartCount})` : ''}`}>
                 <ShoppingCart className="h-5 w-5" />
-                <Badge variant="secondary" className="absolute -top-2 -right-2">0</Badge>
+                {cartCount > 0 && (
+                  <Badge variant="secondary" className="absolute -top-2 -right-2 min-w-[18px] h-[18px] p-0 text-[11px] flex items-center justify-center">
+                    {cartCount}
+                  </Badge>
+                )}
               </Link>
               {user ? (
                 <Button variant="outline" className="border-white text-white hover:bg-white/10" onClick={handleLogout}>
