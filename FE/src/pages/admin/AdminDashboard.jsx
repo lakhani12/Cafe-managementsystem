@@ -18,7 +18,6 @@ import {
   Trash2,
   Eye
 } from 'lucide-react';
-import ProtectedRoute from '../../components/ProtectedRoute';
 
 const AdminDashboard = () => {
   const { user } = useAuth();
@@ -77,7 +76,6 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <ProtectedRoute requireAdmin={true}>
       <div className="admin-dashboard py-5">
         <div className="container">
           {/* Header */}
@@ -333,7 +331,6 @@ const AdminDashboard = () => {
           )}
         </div>
       </div>
-    </ProtectedRoute>
   );
 };
 
