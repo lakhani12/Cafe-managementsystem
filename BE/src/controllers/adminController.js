@@ -8,7 +8,7 @@ import { mapImagesToAbsolute } from "../utils/url.js";
 // User Management
 export const getAllUsers = async (req, res, next) => {
   try {
-    const { page = 1, limit = 10, role, search } = req.query;
+    const { page = 1, limit = 10, role, search, active } = req.query;
     const filter = {};
     
     if (role) filter.role = role;
@@ -17,6 +17,11 @@ export const getAllUsers = async (req, res, next) => {
         { name: { $regex: search, $options: "i" } },
         { email: { $regex: search, $options: "i" } }
       ];
+    }
+
+    if (typeof active !== "undefined") {
+      // accept "true"/"false" as booleans
+      filter.active = active === "true";
     }
 
     const users = await User.find(filter)

@@ -20,15 +20,17 @@ import toast from 'react-hot-toast';
 const UserManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const [editingUser, setEditingUser] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: usersData, isLoading } = useQuery({
-    queryKey: ['admin-users', { search: searchTerm, role: roleFilter, page: currentPage }],
+    queryKey: ['admin-users', { search: searchTerm, role: roleFilter, active: statusFilter, page: currentPage }],
     queryFn: () => adminAPI.getUsers({ 
       search: searchTerm || undefined, 
       role: roleFilter !== 'all' ? roleFilter : undefined,
+      active: statusFilter !== 'all' ? (statusFilter === 'active' ? true : false) : undefined,
       page: currentPage,
       limit: 10
     }),
@@ -64,6 +66,11 @@ const UserManagement = () => {
     { id: 'all', name: 'All Roles' },
     { id: 'user', name: 'Users' },
     { id: 'admin', name: 'Admins' }
+  ];
+  const statuses = [
+    { id: 'all', name: 'All Statuses' },
+    { id: 'active', name: 'Active' },
+    { id: 'inactive', name: 'Inactive' }
   ];
 
   const handleToggleUserStatus = (user) => {
@@ -161,12 +168,24 @@ const UserManagement = () => {
               </select>
             </div>
             <div className="col-md-2">
+              <select
+                className="form-select"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+              >
+                {statuses.map(s => (
+                  <option key={s.id} value={s.id}>{s.name}</option>
+                ))}
+              </select>
+            </div>
+            <div className="col-md-2">
               <Button 
                 variant="outline" 
                 className="w-100"
                 onClick={() => {
                   setSearchTerm('');
                   setRoleFilter('all');
+                  setStatusFilter('all');
                   setCurrentPage(1);
                 }}
               >
