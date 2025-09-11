@@ -1,4 +1,4 @@
-npm run formatimport React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { adminAPI } from '../../services/api';
 import { Button } from '../ui/button';
