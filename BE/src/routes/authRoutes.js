@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { body } from "express-validator";
+import createError from "http-errors";
+import { User } from "../models/User.js";
 import {
 	register,
 	login,
@@ -26,6 +28,21 @@ router.post(
 	requireRole("admin"),
 	[body("name").notEmpty(), body("email").isEmail(), body("password").isLength({ min: 6 })],
 	createAdmin
+);
+
+// Bootstrap first admin: only allowed if no admin exists yet
+router.post(
+	"/admin/bootstrap",
+	[body("name").notEmpty(), body("email").isEmail(), body("password").isLength({ min: 6 })],
+	async (req, res, next) => {
+		try {
+			const existingAdmins = await User.countDocuments({ role: "admin" });
+			if (existingAdmins > 0) return next(createError(403, "Admin already exists"));
+			return createAdmin(req, res, next);
+		} catch (err) {
+			next(err);
+		}
+	}
 );
 
 router.post("/admin/login", [body("email").isEmail(), body("password").notEmpty()], adminLogin);
