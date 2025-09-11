@@ -3,6 +3,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import createError from "http-errors";
+import path from "path";
 
 import router from "./routes/index.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
@@ -42,6 +43,13 @@ app.use(cookieParser());
 app.use(morgan("dev"));
 
 app.use("/api/v1", router);
+
+// Serve uploaded files statically
+app.use("/uploads", (req, res, next) => {
+	res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+	next();
+});
+app.use("/uploads", express.static(path.resolve(process.cwd(), "uploads")));
 
 app.use((req, res, next) => {
 	next(createError(404, "Route not found"));

@@ -1,6 +1,7 @@
 # ---- Node & Monorepo ----
 node_modules/
 **/node_modules/
+be/uploads
 
 # Lockfiles are committed; do not ignore package-lock.json/yarn.lock/pnpm-lock.yaml
 

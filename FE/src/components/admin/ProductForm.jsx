@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { adminAPI } from '../../services/api';
+import { adminAPI, uploadAPI } from '../../services/api';
+import '../../styles/upload.css';
 import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Input } from '../ui/input';
@@ -18,6 +19,8 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
     images: []
   });
   const [imageUrls, setImageUrls] = useState(['']);
+  const [isUploading, setIsUploading] = useState(false);
+  const [selectedFileName, setSelectedFileName] = useState('');
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -31,7 +34,7 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
         active: product.active !== false,
         images: product.images || []
       });
-      setImageUrls(product.images?.length > 0 ? product.images : ['']);
+      setImageUrls([product.images?.[0] || '']);
     }
   }, [product]);
 
@@ -67,19 +70,37 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
     }));
   };
 
-  const handleImageUrlChange = (index, value) => {
-    const newImageUrls = [...imageUrls];
-    newImageUrls[index] = value;
-    setImageUrls(newImageUrls);
+  const handleSingleImageUrlChange = (value) => {
+    setImageUrls([value]);
   };
 
-  const addImageUrl = () => {
-    setImageUrls([...imageUrls, '']);
-  };
-
-  const removeImageUrl = (index) => {
-    const newImageUrls = imageUrls.filter((_, i) => i !== index);
-    setImageUrls(newImageUrls);
+  const handleFileSelect = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const maxMb = Number(import.meta.env.VITE_UPLOAD_MAX_MB || 15);
+    if (file.size > maxMb * 1024 * 1024) {
+      toast.error(`File too large. Max ${maxMb}MB`);
+      e.target.value = '';
+      return;
+    }
+    try {
+      setIsUploading(true);
+      setSelectedFileName(file.name);
+      const res = await uploadAPI.uploadImage(file);
+      const url = res.data?.url;
+      if (url) {
+        setImageUrls([url]);
+        toast.success('Image uploaded');
+      } else {
+        toast.error('Upload failed');
+      }
+    } catch (err) {
+      const msg = err.response?.data?.message || 'Upload failed';
+      toast.error(msg);
+    } finally {
+      setIsUploading(false);
+      e.target.value = '';
+    }
   };
 
   const handleSubmit = (e) => {
@@ -217,39 +238,33 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
                   />
                 </div>
 
-                {/* Images */}
+                {/* Image */}
                 <div className="col-12">
-                  <label className="form-label">Product Images</label>
-                  {imageUrls.map((url, index) => (
-                    <div key={index} className="input-group mb-2">
-                      <Input
-                        type="url"
-                        value={url}
-                        onChange={(e) => handleImageUrlChange(index, e.target.value)}
-                        placeholder="Enter image URL"
-                      />
-                      {imageUrls.length > 1 && (
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => removeImageUrl(index)}
-                          className="text-danger"
-                        >
-                          <X size={16} />
-                        </Button>
+                  <label className="form-label">Product Image</label>
+                  <div className="mb-2 d-flex align-items-center gap-2">
+                    <label className="file-upload">
+                      <input className="file-input" type="file" accept="image/*" onChange={handleFileSelect} disabled={isUploading} />
+                      <span className="file-button btn btn-outline-secondary btn-sm" aria-disabled={isUploading}>
+                        <Upload size={16} className="me-2" /> Choose file
+                      </span>
+                      {selectedFileName && (
+                        <span className="file-name ms-2">{selectedFileName}</span>
                       )}
-                    </div>
-                  ))}
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={addImageUrl}
-                    className="mt-2"
-                  >
-                    <Upload size={16} className="me-2" />
-                    Add Image URL
-                  </Button>
+                    </label>
+                    {isUploading && (
+                      <div className="spinner-border spinner-border-sm" role="status">
+                        <span className="visually-hidden">Uploading...</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="input-group mb-2">
+                    <Input
+                      type="text"
+                      value={imageUrls[0]}
+                      onChange={(e) => handleSingleImageUrlChange(e.target.value)}
+                      placeholder="Enter image URL (optional)"
+                    />
+                  </div>
                 </div>
 
                 {/* Active Status */}

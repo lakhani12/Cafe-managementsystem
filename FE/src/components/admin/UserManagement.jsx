@@ -21,6 +21,7 @@ const UserManagement = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
+  const [editingUser, setEditingUser] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: usersData, isLoading } = useQuery({
@@ -74,6 +75,22 @@ const UserManagement = () => {
         role: user.role, 
         active: !user.active 
       }
+    });
+  };
+
+  const handleEditSubmit = (e) => {
+    e.preventDefault();
+    if (!editingUser) return;
+    updateUserMutation.mutate({
+      id: editingUser._id,
+      userData: {
+        name: editingUser.name,
+        email: editingUser.email,
+        role: editingUser.role,
+        active: editingUser.active !== false,
+      }
+    }, {
+      onSuccess: () => setEditingUser(null)
     });
   };
 
@@ -237,7 +254,7 @@ const UserManagement = () => {
                         <Button 
                           size="sm" 
                           variant="outline"
-                          onClick={() => console.log('Edit user:', user._id)}
+                          onClick={() => setEditingUser(user)}
                         >
                           <Edit size={14} />
                         </Button>
@@ -296,8 +313,87 @@ const UserManagement = () => {
           )}
         </CardContent>
       </Card>
+      {editingUser && (
+        <EditUserModal
+          user={editingUser}
+          onClose={() => setEditingUser(null)}
+          onSubmit={handleEditSubmit}
+          isSubmitting={updateUserMutation.isPending}
+        />
+      )}
     </div>
   );
 };
+
+// Simple inline modal for editing a user
+const EditUserModal = ({ user, onClose, onSubmit, isSubmitting }) => {
+  if (!user) return null;
+  return (
+    <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+      <div className="modal-dialog">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title">Edit User</h5>
+            <button type="button" className="btn-close" onClick={onClose} disabled={isSubmitting}></button>
+          </div>
+          <form onSubmit={onSubmit}>
+            <div className="modal-body">
+              <div className="mb-3">
+                <label className="form-label">Name</label>
+                <input
+                  className="form-control"
+                  type="text"
+                  value={user.name || ''}
+                  onChange={(e) => user.setName ? user.setName(e.target.value) : null}
+                  onChangeCapture={(e) => (user.name = e.target.value)}
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Email</label>
+                <input
+                  className="form-control"
+                  type="email"
+                  value={user.email || ''}
+                  onChangeCapture={(e) => (user.email = e.target.value)}
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Role</label>
+                <select
+                  className="form-select"
+                  value={user.role || 'user'}
+                  onChangeCapture={(e) => (user.role = e.target.value)}
+                >
+                  <option value="user">User</option>
+                  <option value="admin">Admin</option>
+                </select>
+              </div>
+              <div className="form-check">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="editActive"
+                  checked={user.active !== false}
+                  onChangeCapture={(e) => (user.active = e.target.checked)}
+                />
+                <label className="form-check-label" htmlFor="editActive">Active</label>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting}>Cancel</Button>
+              <Button type="submit" className="btn-cafe-primary" disabled={isSubmitting}>
+                {isSubmitting ? 'Saving...' : 'Save Changes'}
+              </Button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// end
 
 export default UserManagement;

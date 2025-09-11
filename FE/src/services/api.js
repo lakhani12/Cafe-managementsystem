@@ -81,6 +81,17 @@ export const reviewsAPI = {
   create: (reviewData) => api.post('/reviews', reviewData),
 };
 
+// Upload API
+export const uploadAPI = {
+  uploadImage: (file) => {
+    const formData = new FormData();
+    formData.append('image', file);
+    return api.post('/upload/image', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
+};
+
 // Admin API
 export const adminAPI = {
   // Dashboard

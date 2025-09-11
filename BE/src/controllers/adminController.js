@@ -3,6 +3,7 @@ import { User } from "../models/User.js";
 import { Product } from "../models/Product.js";
 import { Order } from "../models/Order.js";
 import { Cart } from "../models/Cart.js";
+import { mapImagesToAbsolute } from "../utils/url.js";
 
 // User Management
 export const getAllUsers = async (req, res, next) => {
@@ -248,9 +249,15 @@ export const getAllProductsAdmin = async (req, res, next) => {
 
     const total = await Product.countDocuments(filter);
 
+    // Normalize image URLs to absolute
+    const productsWithAbsolute = products.map((p) => ({
+      ...p.toObject(),
+      images: mapImagesToAbsolute(req, p.images),
+    }));
+
     res.json({
       success: true,
-      products,
+      products: productsWithAbsolute,
       totalPages: Math.ceil(total / limit),
       currentPage: page,
       total
@@ -263,6 +270,7 @@ export const getAllProductsAdmin = async (req, res, next) => {
 export const createProductAdmin = async (req, res, next) => {
   try {
     const product = await Product.create(req.body);
+    product.images = mapImagesToAbsolute(req, product.images);
     res.status(201).json({ success: true, product });
   } catch (err) {
     next(err);
@@ -277,6 +285,7 @@ export const updateProductAdmin = async (req, res, next) => {
       { new: true }
     );
     if (!product) throw createError(404, "Product not found");
+    product.images = mapImagesToAbsolute(req, product.images);
     res.json({ success: true, product });
   } catch (err) {
     next(err);

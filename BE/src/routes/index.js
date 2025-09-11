@@ -5,6 +5,7 @@ import cartRoutes from "./cartRoutes.js";
 import orderRoutes from "./orderRoutes.js";
 import reviewRoutes from "./reviewRoutes.js";
 import adminRoutes from "./adminRoutes.js";
+import uploadRoutes from "./uploadRoutes.js";
 
 const router = Router();
 
@@ -14,6 +15,7 @@ router.use("/cart", cartRoutes);
 router.use("/orders", orderRoutes);
 router.use("/reviews", reviewRoutes);
 router.use("/admin", adminRoutes);
+router.use("/upload", uploadRoutes);
 
 export default router;
 

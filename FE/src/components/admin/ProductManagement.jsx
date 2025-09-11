@@ -74,7 +74,6 @@ const ProductManagement = () => {
     updateProductMutation.mutate({
       id: product._id,
       productData: { 
-        ...product, 
         active: !product.active 
       }
     });
