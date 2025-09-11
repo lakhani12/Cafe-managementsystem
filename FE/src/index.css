@@ -1,5 +1,5 @@
 @import 'bootstrap/dist/css/bootstrap.min.css';
-@import "tailwindcss";
+@import 'tailwindcss';
 @plugin "tailwindcss-animate";
 @source "./index.html";
 @source "./src/**/*.{js,jsx,ts,tsx}";
@@ -7,13 +7,13 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --primary-color: #8B4513;
-  --secondary-color: #D2691E;
-  --accent-color: #F4A460;
-  --text-dark: #2C1810;
-  --text-light: #F5F5DC;
-  --bg-light: #FFF8DC;
-  --bg-dark: #2C1810;
+  --primary-color: #8b4513;
+  --secondary-color: #d2691e;
+  --accent-color: #f4a460;
+  --text-dark: #2c1810;
+  --text-light: #f5f5dc;
+  --bg-light: #fff8dc;
+  --bg-dark: #2c1810;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
@@ -50,7 +50,13 @@
 
 body {
   margin: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'Roboto',
+    sans-serif;
   background-color: var(--bg-light);
   color: var(--text-dark);
   min-height: 100vh;
@@ -90,8 +96,8 @@ body {
 }
 
 .btn-cafe-primary:hover {
-  background-color: #6B3410;
-  border-color: #6B3410;
+  background-color: #6b3410;
+  border-color: #6b3410;
   color: white;
 }
 
@@ -102,8 +108,8 @@ body {
 }
 
 .btn-cafe-secondary:hover {
-  background-color: #B8860B;
-  border-color: #B8860B;
+  background-color: #b8860b;
+  border-color: #b8860b;
   color: white;
 }
 
@@ -137,7 +143,12 @@ body {
 }
 
 .hero-section {
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--secondary-color),
+    var(--accent-color)
+  );
   min-height: 60vh;
 }
 
@@ -168,28 +179,28 @@ body {
 }
 
 .status-pending {
-  background-color: #FFF3CD;
+  background-color: #fff3cd;
   color: #856404;
 }
 
 .status-preparing {
-  background-color: #D1ECF1;
-  color: #0C5460;
+  background-color: #d1ecf1;
+  color: #0c5460;
 }
 
 .status-ready {
-  background-color: #D4EDDA;
+  background-color: #d4edda;
   color: #155724;
 }
 
 .status-completed {
-  background-color: #D1ECF1;
-  color: #0C5460;
+  background-color: #d1ecf1;
+  color: #0c5460;
 }
 
 .status-cancelled {
-  background-color: #F8D7DA;
-  color: #721C24;
+  background-color: #f8d7da;
+  color: #721c24;
 }
 
 @media (max-width: 768px) {

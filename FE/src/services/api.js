@@ -97,18 +97,18 @@ export const adminAPI = {
   // Dashboard
   getDashboardStats: () => api.get('/admin/dashboard'),
   getSalesReport: (params) => api.get('/admin/reports/sales', { params }),
-  
+
   // User Management
   getUsers: (params) => api.get('/admin/users', { params }),
   getUserById: (id) => api.get(`/admin/users/${id}`),
   updateUser: (id, userData) => api.put(`/admin/users/${id}`, userData),
   deleteUser: (id) => api.delete(`/admin/users/${id}`),
-  
+
   // Order Management
   getOrders: (params) => api.get('/admin/orders', { params }),
   getOrderById: (id) => api.get(`/admin/orders/${id}`),
   updateOrderStatus: (id, status) => api.put(`/admin/orders/${id}/status`, { status }),
-  
+
   // Product Management
   getProducts: (params) => api.get('/admin/products', { params }),
   createProduct: (productData) => api.post('/admin/products', productData),

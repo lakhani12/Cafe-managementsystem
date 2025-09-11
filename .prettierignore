@@ -1,0 +1,10 @@
+node_modules
+build
+dist
+coverage
+**/*.min.js
+**/*.map
+uploads
+BE/uploads
+FE/node_modules
+BE/node_modules

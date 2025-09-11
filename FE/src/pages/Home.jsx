@@ -17,24 +17,24 @@ const Home = () => {
   const features = [
     {
       icon: <Coffee size={48} className="text-cafe-primary" />,
-      title: "Premium Coffee",
-      description: "Handcrafted coffee made from the finest beans sourced from around the world."
+      title: 'Premium Coffee',
+      description: 'Handcrafted coffee made from the finest beans sourced from around the world.',
     },
     {
       icon: <Clock size={48} className="text-cafe-primary" />,
-      title: "Quick Service",
-      description: "Fast and efficient service to get your order ready in no time."
+      title: 'Quick Service',
+      description: 'Fast and efficient service to get your order ready in no time.',
     },
     {
       icon: <Star size={48} className="text-cafe-primary" />,
-      title: "Quality Food",
-      description: "Fresh ingredients and delicious meals prepared by our expert chefs."
+      title: 'Quality Food',
+      description: 'Fresh ingredients and delicious meals prepared by our expert chefs.',
     },
     {
       icon: <Users size={48} className="text-cafe-primary" />,
-      title: "Friendly Staff",
-      description: "Our welcoming team is here to make your experience memorable."
-    }
+      title: 'Friendly Staff',
+      description: 'Our welcoming team is here to make your experience memorable.',
+    },
   ];
 
   const handleAddToCart = (product) => {
@@ -49,12 +49,10 @@ const Home = () => {
         <div className="container">
           <div className="row align-items-center">
             <div className="col-lg-6">
-              <h1 className="display-4 fw-bold mb-4">
-                Welcome to Cafe Delight
-              </h1>
+              <h1 className="display-4 fw-bold mb-4">Welcome to Cafe Delight</h1>
               <p className="lead mb-4">
-                Experience the perfect blend of taste and ambiance. We serve the finest coffee 
-                and delicious meals in a cozy atmosphere that feels like home.
+                Experience the perfect blend of taste and ambiance. We serve the finest coffee and
+                delicious meals in a cozy atmosphere that feels like home.
               </p>
               <div className="d-flex gap-3">
                 <Button asChild size="lg" className="btn-cafe-primary">
@@ -68,9 +66,9 @@ const Home = () => {
               </div>
             </div>
             <div className="col-lg-6 text-center">
-              <img 
-                src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=500&h=400&fit=crop" 
-                alt="Cafe Interior" 
+              <img
+                src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=500&h=400&fit=crop"
+                alt="Cafe Interior"
                 className="img-fluid rounded-3 shadow-lg"
               />
             </div>
@@ -108,7 +106,7 @@ const Home = () => {
             <h2 className="display-5 fw-bold text-cafe-primary mb-3">Popular Items</h2>
             <p className="lead text-muted">Customer favorites you'll love</p>
           </div>
-          
+
           {isLoading ? (
             <div className="text-center py-5">
               <div className="spinner-border text-cafe-primary" role="status">
@@ -121,8 +119,11 @@ const Home = () => {
                 <div key={product._id} className="col-lg-4 col-md-6">
                   <Card className="card-cafe h-100 border-0 overflow-hidden">
                     <div className="position-relative">
-                      <img 
-                        src={product.images?.[0] || "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=300&h=200&fit=crop"} 
+                      <img
+                        src={
+                          product.images?.[0] ||
+                          'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=300&h=200&fit=crop'
+                        }
                         alt={product.title}
                         className="card-img-top"
                         style={{ height: '200px', objectFit: 'cover' }}
@@ -143,7 +144,7 @@ const Home = () => {
                         <span className="text-muted small">Category: {product.category}</span>
                         <span className="text-muted small">Stock: {product.inStock}</span>
                       </div>
-                      <Button 
+                      <Button
                         className="btn-cafe-primary w-100"
                         onClick={() => handleAddToCart(product)}
                         disabled={product.inStock === 0}
@@ -157,7 +158,7 @@ const Home = () => {
               ))}
             </div>
           )}
-          
+
           <div className="text-center mt-5">
             <Button asChild size="lg" className="btn-cafe-secondary">
               <Link to="/menu">View Full Menu</Link>
@@ -171,7 +172,8 @@ const Home = () => {
         <div className="container text-center text-white">
           <h2 className="display-5 fw-bold mb-3">Ready to Order?</h2>
           <p className="lead mb-4">
-            Join thousands of satisfied customers who choose Cafe Delight for their daily coffee fix.
+            Join thousands of satisfied customers who choose Cafe Delight for their daily coffee
+            fix.
           </p>
           <Button asChild size="lg" variant="light">
             <Link to="/menu">Order Now</Link>

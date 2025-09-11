@@ -30,14 +30,14 @@ const AdminLogin = () => {
     setIsLoading(true);
 
     const result = await login(formData, true); // true for admin login
-    
+
     if (result.success) {
       toast.success('Admin login successful!');
       navigate('/admin');
     } else {
       toast.error(result.error);
     }
-    
+
     setIsLoading(false);
   };
 
@@ -123,7 +123,10 @@ const AdminLogin = () => {
                   </Button>
 
                   <div className="text-center">
-                    <Link to="/" className="text-muted text-decoration-none d-flex align-items-center justify-content-center">
+                    <Link
+                      to="/"
+                      className="text-muted text-decoration-none d-flex align-items-center justify-content-center"
+                    >
                       <ArrowLeft size={16} className="me-2" />
                       Back to Home
                     </Link>

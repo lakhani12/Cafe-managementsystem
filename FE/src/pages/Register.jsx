@@ -30,7 +30,7 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (formData.password !== formData.confirmPassword) {
       toast.error('Passwords do not match');
       return;
@@ -48,14 +48,14 @@ const Register = () => {
       email: formData.email,
       password: formData.password,
     });
-    
+
     if (result.success) {
       toast.success('Registration successful!');
       navigate('/');
     } else {
       toast.error(result.error);
     }
-    
+
     setIsLoading(false);
   };
 
@@ -136,7 +136,9 @@ const Register = () => {
                         )}
                       </button>
                     </div>
-                    <small className="text-muted">Password must be at least 6 characters long</small>
+                    <small className="text-muted">
+                      Password must be at least 6 characters long
+                    </small>
                   </div>
 
                   <div className="mb-4">
@@ -170,12 +172,7 @@ const Register = () => {
                   </div>
 
                   <div className="form-check mb-4">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="terms"
-                      required
-                    />
+                    <input className="form-check-input" type="checkbox" id="terms" required />
                     <label className="form-check-label text-muted" htmlFor="terms">
                       I agree to the{' '}
                       <Link to="/terms" className="text-cafe-primary text-decoration-none">
@@ -209,7 +206,10 @@ const Register = () => {
                   <div className="text-center">
                     <p className="text-muted mb-0">
                       Already have an account?{' '}
-                      <Link to="/login" className="text-cafe-primary fw-medium text-decoration-none">
+                      <Link
+                        to="/login"
+                        className="text-cafe-primary fw-medium text-decoration-none"
+                      >
                         Sign in
                       </Link>
                     </p>

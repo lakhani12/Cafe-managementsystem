@@ -33,14 +33,14 @@ const Login = () => {
     setIsLoading(true);
 
     const result = await login(formData);
-    
+
     if (result.success) {
       toast.success('Login successful!');
       navigate(from, { replace: true });
     } else {
       toast.error(result.error);
     }
-    
+
     setIsLoading(false);
   };
 
@@ -109,11 +109,7 @@ const Login = () => {
 
                   <div className="d-flex justify-content-between align-items-center mb-4">
                     <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id="remember"
-                      />
+                      <input className="form-check-input" type="checkbox" id="remember" />
                       <label className="form-check-label text-muted" htmlFor="remember">
                         Remember me
                       </label>
@@ -144,7 +140,10 @@ const Login = () => {
                   <div className="text-center">
                     <p className="text-muted mb-0">
                       Don't have an account?{' '}
-                      <Link to="/register" className="text-cafe-primary fw-medium text-decoration-none">
+                      <Link
+                        to="/register"
+                        className="text-cafe-primary fw-medium text-decoration-none"
+                      >
                         Sign up
                       </Link>
                     </p>

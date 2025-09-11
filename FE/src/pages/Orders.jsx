@@ -11,7 +11,11 @@ import ProtectedRoute from '../components/ProtectedRoute';
 const Orders = () => {
   const { user } = useAuth();
 
-  const { data: orders, isLoading, error } = useQuery({
+  const {
+    data: orders,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ['orders', 'my'],
     queryFn: () => ordersAPI.getMyOrders(),
   });
@@ -91,11 +95,7 @@ const Orders = () => {
         <div className="container">
           {/* Header */}
           <div className="d-flex align-items-center mb-4">
-            <Button
-              variant="ghost"
-              onClick={() => window.history.back()}
-              className="me-3"
-            >
+            <Button variant="ghost" onClick={() => window.history.back()} className="me-3">
               <ArrowLeft size={20} />
             </Button>
             <h1 className="display-5 fw-bold text-cafe-primary mb-0">My Orders</h1>
@@ -138,7 +138,10 @@ const Orders = () => {
                           <h6 className="fw-bold mb-3">Items:</h6>
                           <div className="space-y-2">
                             {order.items.map((item, index) => (
-                              <div key={index} className="d-flex justify-content-between align-items-center py-2 border-bottom">
+                              <div
+                                key={index}
+                                className="d-flex justify-content-between align-items-center py-2 border-bottom"
+                              >
                                 <div>
                                   <span className="fw-medium">{item.product.title}</span>
                                   <span className="text-muted ms-2">x{item.quantity}</span>
@@ -158,12 +161,14 @@ const Orders = () => {
                             </div>
                             <div className="d-flex justify-content-between mb-2">
                               <span>Tax:</span>
-                              <span>${((order.total - order.subtotal)).toFixed(2)}</span>
+                              <span>${(order.total - order.subtotal).toFixed(2)}</span>
                             </div>
                             <hr />
                             <div className="d-flex justify-content-between">
                               <span className="fw-bold">Total:</span>
-                              <span className="fw-bold text-cafe-primary">${order.total.toFixed(2)}</span>
+                              <span className="fw-bold text-cafe-primary">
+                                ${order.total.toFixed(2)}
+                              </span>
                             </div>
                           </div>
                         </div>

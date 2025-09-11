@@ -5,16 +5,7 @@ import { Button } from '../ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Input } from '../ui/input';
 import { Badge } from '../ui/badge';
-import { 
-  Search, 
-  Filter,
-  Edit,
-  Trash2,
-  UserCheck,
-  UserX,
-  Mail,
-  Calendar
-} from 'lucide-react';
+import { Search, Filter, Edit, Trash2, UserCheck, UserX, Mail, Calendar } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const UserManagement = () => {
@@ -26,14 +17,18 @@ const UserManagement = () => {
   const queryClient = useQueryClient();
 
   const { data: usersData, isLoading } = useQuery({
-    queryKey: ['admin-users', { search: searchTerm, role: roleFilter, active: statusFilter, page: currentPage }],
-    queryFn: () => adminAPI.getUsers({ 
-      search: searchTerm || undefined, 
-      role: roleFilter !== 'all' ? roleFilter : undefined,
-      active: statusFilter !== 'all' ? (statusFilter === 'active' ? true : false) : undefined,
-      page: currentPage,
-      limit: 10
-    }),
+    queryKey: [
+      'admin-users',
+      { search: searchTerm, role: roleFilter, active: statusFilter, page: currentPage },
+    ],
+    queryFn: () =>
+      adminAPI.getUsers({
+        search: searchTerm || undefined,
+        role: roleFilter !== 'all' ? roleFilter : undefined,
+        active: statusFilter !== 'all' ? (statusFilter === 'active' ? true : false) : undefined,
+        page: currentPage,
+        limit: 10,
+      }),
   });
 
   const updateUserMutation = useMutation({
@@ -65,44 +60,49 @@ const UserManagement = () => {
   const roles = [
     { id: 'all', name: 'All Roles' },
     { id: 'user', name: 'Users' },
-    { id: 'admin', name: 'Admins' }
+    { id: 'admin', name: 'Admins' },
   ];
   const statuses = [
     { id: 'all', name: 'All Statuses' },
     { id: 'active', name: 'Active' },
-    { id: 'inactive', name: 'Inactive' }
+    { id: 'inactive', name: 'Inactive' },
   ];
 
   const handleToggleUserStatus = (user) => {
     updateUserMutation.mutate({
       id: user._id,
-      userData: { 
-        name: user.name, 
-        email: user.email, 
-        role: user.role, 
-        active: !user.active 
-      }
+      userData: {
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        active: !user.active,
+      },
     });
   };
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
     if (!editingUser) return;
-    updateUserMutation.mutate({
-      id: editingUser._id,
-      userData: {
-        name: editingUser.name,
-        email: editingUser.email,
-        role: editingUser.role,
-        active: editingUser.active !== false,
+    updateUserMutation.mutate(
+      {
+        id: editingUser._id,
+        userData: {
+          name: editingUser.name,
+          email: editingUser.email,
+          role: editingUser.role,
+          active: editingUser.active !== false,
+        },
+      },
+      {
+        onSuccess: () => setEditingUser(null),
       }
-    }, {
-      onSuccess: () => setEditingUser(null)
-    });
+    );
   };
 
   const handleDeleteUser = (id) => {
-    if (window.confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+    if (
+      window.confirm('Are you sure you want to delete this user? This action cannot be undone.')
+    ) {
       deleteUserMutation.mutate(id);
     }
   };
@@ -111,7 +111,7 @@ const UserManagement = () => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
     });
   };
 
@@ -144,7 +144,10 @@ const UserManagement = () => {
           <div className="row g-3">
             <div className="col-md-6">
               <div className="position-relative">
-                <Search size={16} className="position-absolute top-50 start-0 translate-middle-y ms-3 text-muted" />
+                <Search
+                  size={16}
+                  className="position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"
+                />
                 <Input
                   type="text"
                   placeholder="Search users by name or email..."
@@ -160,7 +163,7 @@ const UserManagement = () => {
                 value={roleFilter}
                 onChange={(e) => setRoleFilter(e.target.value)}
               >
-                {roles.map(role => (
+                {roles.map((role) => (
                   <option key={role.id} value={role.id}>
                     {role.name}
                   </option>
@@ -173,14 +176,16 @@ const UserManagement = () => {
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
               >
-                {statuses.map(s => (
-                  <option key={s.id} value={s.id}>{s.name}</option>
+                {statuses.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
                 ))}
               </select>
             </div>
             <div className="col-md-2">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="w-100"
                 onClick={() => {
                   setSearchTerm('');
@@ -216,12 +221,14 @@ const UserManagement = () => {
                 </tr>
               </thead>
               <tbody>
-                {users.map(user => (
+                {users.map((user) => (
                   <tr key={user._id}>
                     <td>
                       <div className="d-flex align-items-center">
-                        <div className="cafe-primary rounded-circle d-flex align-items-center justify-content-center me-3" 
-                             style={{ width: '40px', height: '40px' }}>
+                        <div
+                          className="cafe-primary rounded-circle d-flex align-items-center justify-content-center me-3"
+                          style={{ width: '40px', height: '40px' }}
+                        >
                           <span className="text-white fw-bold">
                             {user.name?.charAt(0)?.toUpperCase() || 'U'}
                           </span>
@@ -239,7 +246,7 @@ const UserManagement = () => {
                       </div>
                     </td>
                     <td>
-                      <Badge 
+                      <Badge
                         variant={user.role === 'admin' ? 'default' : 'secondary'}
                         className={user.role === 'admin' ? 'bg-warning' : 'bg-secondary'}
                       >
@@ -247,7 +254,7 @@ const UserManagement = () => {
                       </Badge>
                     </td>
                     <td>
-                      <Badge 
+                      <Badge
                         variant={user.active !== false ? 'default' : 'secondary'}
                         className={user.active !== false ? 'bg-success' : 'bg-secondary'}
                       >
@@ -262,23 +269,19 @@ const UserManagement = () => {
                     </td>
                     <td>
                       <div className="d-flex gap-1">
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           variant="outline"
                           onClick={() => handleToggleUserStatus(user)}
                           disabled={updateUserMutation.isPending}
                         >
                           {user.active !== false ? <UserX size={14} /> : <UserCheck size={14} />}
                         </Button>
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={() => setEditingUser(user)}
-                        >
+                        <Button size="sm" variant="outline" onClick={() => setEditingUser(user)}>
                           <Edit size={14} />
                         </Button>
-                        <Button 
-                          size="sm" 
+                        <Button
+                          size="sm"
                           variant="outline"
                           className="text-danger"
                           onClick={() => handleDeleteUser(user._id)}
@@ -298,13 +301,14 @@ const UserManagement = () => {
           {totalPages > 1 && (
             <div className="d-flex justify-content-between align-items-center mt-4">
               <div className="text-muted">
-                Showing {((currentPage - 1) * 10) + 1} to {Math.min(currentPage * 10, total)} of {total} users
+                Showing {(currentPage - 1) * 10 + 1} to {Math.min(currentPage * 10, total)} of{' '}
+                {total} users
               </div>
               <div className="d-flex gap-2">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   size="sm"
-                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}
                 >
                   Previous
@@ -312,10 +316,10 @@ const UserManagement = () => {
                 <span className="d-flex align-items-center px-3">
                   Page {currentPage} of {totalPages}
                 </span>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   size="sm"
-                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                   disabled={currentPage === totalPages}
                 >
                   Next
@@ -353,7 +357,12 @@ const EditUserModal = ({ user, onClose, onSubmit, isSubmitting }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">Edit User</h5>
-            <button type="button" className="btn-close" onClick={onClose} disabled={isSubmitting}></button>
+            <button
+              type="button"
+              className="btn-close"
+              onClick={onClose}
+              disabled={isSubmitting}
+            ></button>
           </div>
           <form onSubmit={onSubmit}>
             <div className="modal-body">
@@ -363,7 +372,7 @@ const EditUserModal = ({ user, onClose, onSubmit, isSubmitting }) => {
                   className="form-control"
                   type="text"
                   value={user.name || ''}
-                  onChange={(e) => user.setName ? user.setName(e.target.value) : null}
+                  onChange={(e) => (user.setName ? user.setName(e.target.value) : null)}
                   onChangeCapture={(e) => (user.name = e.target.value)}
                   required
                 />
@@ -397,11 +406,15 @@ const EditUserModal = ({ user, onClose, onSubmit, isSubmitting }) => {
                   checked={user.active !== false}
                   onChangeCapture={(e) => (user.active = e.target.checked)}
                 />
-                <label className="form-check-label" htmlFor="editActive">Active</label>
+                <label className="form-check-label" htmlFor="editActive">
+                  Active
+                </label>
               </div>
             </div>
             <div className="modal-footer">
-              <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting}>Cancel</Button>
+              <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting}>
+                Cancel
+              </Button>
               <Button type="submit" className="btn-cafe-primary" disabled={isSubmitting}>
                 {isSubmitting ? 'Saving...' : 'Save Changes'}
               </Button>

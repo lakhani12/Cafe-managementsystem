@@ -52,11 +52,7 @@ const Profile = () => {
         <div className="container">
           {/* Header */}
           <div className="d-flex align-items-center mb-4">
-            <Button
-              variant="ghost"
-              onClick={() => window.history.back()}
-              className="me-3"
-            >
+            <Button variant="ghost" onClick={() => window.history.back()} className="me-3">
               <ArrowLeft size={20} />
             </Button>
             <h1 className="display-5 fw-bold text-cafe-primary mb-0">My Profile</h1>
@@ -69,29 +65,17 @@ const Profile = () => {
                 <CardHeader className="d-flex justify-content-between align-items-center">
                   <CardTitle className="h4 mb-0">Personal Information</CardTitle>
                   {!isEditing ? (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setIsEditing(true)}
-                    >
+                    <Button variant="outline" size="sm" onClick={() => setIsEditing(true)}>
                       <Edit size={16} className="me-2" />
                       Edit
                     </Button>
                   ) : (
                     <div className="d-flex gap-2">
-                      <Button
-                        size="sm"
-                        onClick={handleSave}
-                        className="btn-cafe-primary"
-                      >
+                      <Button size="sm" onClick={handleSave} className="btn-cafe-primary">
                         <Save size={16} className="me-2" />
                         Save
                       </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={handleCancel}
-                      >
+                      <Button size="sm" variant="outline" onClick={handleCancel}>
                         <X size={16} className="me-2" />
                         Cancel
                       </Button>
@@ -141,12 +125,12 @@ const Profile = () => {
                       )}
                     </div>
                   </div>
-                  
+
                   <div className="row">
                     <div className="col-md-6 mb-3">
                       <Label className="form-label fw-medium">Account Type</Label>
                       <div className="form-control-plaintext">
-                        <Badge 
+                        <Badge
                           variant={user?.role === 'admin' ? 'default' : 'secondary'}
                           className={user?.role === 'admin' ? 'bg-cafe-primary' : ''}
                         >
@@ -180,12 +164,10 @@ const Profile = () => {
                     <Button asChild variant="outline">
                       <a href="/cart">View Cart</a>
                     </Button>
-                    <Button variant="outline">
-                      Change Password
-                    </Button>
+                    <Button variant="outline">Change Password</Button>
                     <hr />
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       className="text-danger border-danger"
                       onClick={() => {
                         if (window.confirm('Are you sure you want to logout?')) {

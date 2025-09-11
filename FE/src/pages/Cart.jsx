@@ -110,11 +110,7 @@ const Cart = () => {
         <div className="container">
           {/* Header */}
           <div className="d-flex align-items-center mb-4">
-            <Button
-              variant="ghost"
-              onClick={() => navigate(-1)}
-              className="me-3"
-            >
+            <Button variant="ghost" onClick={() => navigate(-1)} className="me-3">
               <ArrowLeft size={20} />
             </Button>
             <h1 className="display-5 fw-bold text-cafe-primary mb-0">Shopping Cart</h1>
@@ -153,19 +149,18 @@ const Cart = () => {
                         <div key={item._id} className="cart-item d-flex align-items-center">
                           <div className="flex-shrink-0 me-3">
                             <img
-                              src={item.product.images?.[0] || "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=100&h=100&fit=crop"}
+                              src={
+                                item.product.images?.[0] ||
+                                'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=100&h=100&fit=crop'
+                              }
                               alt={item.product.title}
                               className="rounded"
                               style={{ width: '80px', height: '80px', objectFit: 'cover' }}
                             />
                           </div>
                           <div className="flex-grow-1">
-                            <h6 className="fw-bold text-cafe-primary mb-1">
-                              {item.product.title}
-                            </h6>
-                            <p className="text-muted small mb-2">
-                              {item.product.description}
-                            </p>
+                            <h6 className="fw-bold text-cafe-primary mb-1">{item.product.title}</h6>
+                            <p className="text-muted small mb-2">{item.product.description}</p>
                             <div className="d-flex align-items-center justify-content-between">
                               <span className="fw-bold text-cafe-secondary">
                                 ${item.price.toFixed(2)}
@@ -179,7 +174,10 @@ const Cart = () => {
                                 >
                                   <Minus size={14} />
                                 </Button>
-                                <span className="fw-bold min-w-0" style={{ minWidth: '2rem', textAlign: 'center' }}>
+                                <span
+                                  className="fw-bold min-w-0"
+                                  style={{ minWidth: '2rem', textAlign: 'center' }}
+                                >
                                   {item.quantity}
                                 </span>
                                 <Button
@@ -215,7 +213,7 @@ const Cart = () => {
                 <Card className="card-cafe sticky-top" style={{ top: '100px' }}>
                   <CardContent className="p-4">
                     <h5 className="fw-bold text-cafe-primary mb-4">Order Summary</h5>
-                    
+
                     <div className="d-flex justify-content-between mb-2">
                       <span>Subtotal:</span>
                       <span>${subtotal.toFixed(2)}</span>
@@ -248,11 +246,7 @@ const Cart = () => {
                       )}
                     </Button>
 
-                    <Button
-                      asChild
-                      variant="outline"
-                      className="w-100"
-                    >
+                    <Button asChild variant="outline" className="w-100">
                       <a href="/menu">Continue Shopping</a>
                     </Button>
                   </CardContent>

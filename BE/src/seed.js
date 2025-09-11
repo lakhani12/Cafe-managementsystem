@@ -13,7 +13,12 @@ async function seedUsers() {
   // Admin
   let admin = await User.findOne({ email: adminEmail }).select('+password');
   if (!admin) {
-    admin = new User({ name: 'Administrator', email: adminEmail, password: adminPassword, role: 'admin' });
+    admin = new User({
+      name: 'Administrator',
+      email: adminEmail,
+      password: adminPassword,
+      role: 'admin',
+    });
     await admin.save();
     // eslint-disable-next-line no-console
     console.log(`Created admin: ${adminEmail}`);
@@ -25,7 +30,12 @@ async function seedUsers() {
   // Default user
   let defaultUser = await User.findOne({ email: userEmail }).select('+password');
   if (!defaultUser) {
-    defaultUser = new User({ name: 'Default User', email: userEmail, password: userPassword, role: 'user' });
+    defaultUser = new User({
+      name: 'Default User',
+      email: userEmail,
+      password: userPassword,
+      role: 'user',
+    });
     await defaultUser.save();
     // eslint-disable-next-line no-console
     console.log(`Created user: ${userEmail}`);

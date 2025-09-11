@@ -8,12 +8,12 @@ import { Badge } from '../../components/ui/badge';
 import ProductManagement from '../../components/admin/ProductManagement';
 import UserManagement from '../../components/admin/UserManagement';
 import OrderManagement from '../../components/admin/OrderManagement';
-import { 
-  BarChart3, 
-  Package, 
-  Users, 
-  DollarSign, 
-  Clock, 
+import {
+  BarChart3,
+  Package,
+  Users,
+  DollarSign,
+  Clock,
   CheckCircle,
   AlertCircle,
   Plus,
@@ -21,7 +21,7 @@ import {
   Trash2,
   Eye,
   ShoppingCart,
-  TrendingUp
+  TrendingUp,
 } from 'lucide-react';
 import ProtectedRoute from '../../components/ProtectedRoute';
 
@@ -128,7 +128,9 @@ const AdminDashboard = () => {
                       <Clock size={24} className="text-white" />
                     </div>
                     <div>
-                      <h3 className="fw-bold text-cafe-primary mb-1">{orderList.filter(order => order.status === 'pending').length}</h3>
+                      <h3 className="fw-bold text-cafe-primary mb-1">
+                        {orderList.filter((order) => order.status === 'pending').length}
+                      </h3>
                       <p className="text-muted mb-0">Pending Orders</p>
                     </div>
                   </div>
@@ -143,7 +145,9 @@ const AdminDashboard = () => {
                       <CheckCircle size={24} className="text-white" />
                     </div>
                     <div>
-                      <h3 className="fw-bold text-cafe-primary mb-1">{orderList.filter(order => order.status === 'completed').length}</h3>
+                      <h3 className="fw-bold text-cafe-primary mb-1">
+                        {orderList.filter((order) => order.status === 'completed').length}
+                      </h3>
                       <p className="text-muted mb-0">Completed</p>
                     </div>
                   </div>
@@ -158,7 +162,9 @@ const AdminDashboard = () => {
                       <DollarSign size={24} className="text-white" />
                     </div>
                     <div>
-                      <h3 className="fw-bold text-cafe-primary mb-1">${(stats.totalRevenue || 0).toFixed(2)}</h3>
+                      <h3 className="fw-bold text-cafe-primary mb-1">
+                        ${(stats.totalRevenue || 0).toFixed(2)}
+                      </h3>
                       <p className="text-muted mb-0">Total Revenue</p>
                     </div>
                   </div>
@@ -170,12 +176,12 @@ const AdminDashboard = () => {
           {/* Tabs */}
           <div className="mb-4">
             <div className="d-flex gap-2">
-              {tabs.map(tab => (
+              {tabs.map((tab) => (
                 <Button
                   key={tab.id}
-                  variant={activeTab === tab.id ? "default" : "outline"}
+                  variant={activeTab === tab.id ? 'default' : 'outline'}
                   onClick={() => setActiveTab(tab.id)}
-                  className={activeTab === tab.id ? "btn-cafe-primary" : ""}
+                  className={activeTab === tab.id ? 'btn-cafe-primary' : ''}
                 >
                   <tab.icon size={16} className="me-2" />
                   {tab.label}
@@ -194,8 +200,11 @@ const AdminDashboard = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3">
-                      {recentOrders.map(order => (
-                        <div key={order._id} className="d-flex justify-content-between align-items-center p-3 border rounded">
+                      {recentOrders.map((order) => (
+                        <div
+                          key={order._id}
+                          className="d-flex justify-content-between align-items-center p-3 border rounded"
+                        >
                           <div>
                             <h6 className="mb-1">Order #{order._id.slice(-8).toUpperCase()}</h6>
                             <p className="text-muted small mb-0">
@@ -203,7 +212,9 @@ const AdminDashboard = () => {
                             </p>
                           </div>
                           <div className="text-end">
-                            <div className="fw-bold text-cafe-primary">${order.total.toFixed(2)}</div>
+                            <div className="fw-bold text-cafe-primary">
+                              ${order.total.toFixed(2)}
+                            </div>
                             <span className={getStatusBadge(order.status)}>
                               {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                             </span>
@@ -221,24 +232,24 @@ const AdminDashboard = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="d-grid gap-2">
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         className="text-start"
                         onClick={() => setActiveTab('products')}
                       >
                         <Plus size={16} className="me-2" />
                         Add New Product
                       </Button>
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         className="text-start"
                         onClick={() => setActiveTab('users')}
                       >
                         <Users size={16} className="me-2" />
                         Manage Users
                       </Button>
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         className="text-start"
                         onClick={() => setActiveTab('reports')}
                       >
@@ -263,7 +274,9 @@ const AdminDashboard = () => {
               <CardContent>
                 <div className="text-center py-5">
                   <h5 className="text-muted">Reports Coming Soon</h5>
-                  <p className="text-muted">Advanced analytics and reporting features will be available here.</p>
+                  <p className="text-muted">
+                    Advanced analytics and reporting features will be available here.
+                  </p>
                 </div>
               </CardContent>
             </Card>

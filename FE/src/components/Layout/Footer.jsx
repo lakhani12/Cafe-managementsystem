@@ -13,8 +13,8 @@ const Footer = () => {
               <h5 className="mb-0">Cafe Delight</h5>
             </div>
             <p className="text-light">
-              Experience the perfect blend of taste and ambiance at Cafe Delight. 
-              We serve the finest coffee and delicious meals in a cozy atmosphere.
+              Experience the perfect blend of taste and ambiance at Cafe Delight. We serve the
+              finest coffee and delicious meals in a cozy atmosphere.
             </p>
           </div>
 
@@ -22,16 +22,24 @@ const Footer = () => {
             <h6 className="text-cafe-primary mb-3">Quick Links</h6>
             <ul className="list-unstyled">
               <li className="mb-2">
-                <Link to="/" className="text-light text-decoration-none">Home</Link>
+                <Link to="/" className="text-light text-decoration-none">
+                  Home
+                </Link>
               </li>
               <li className="mb-2">
-                <Link to="/menu" className="text-light text-decoration-none">Menu</Link>
+                <Link to="/menu" className="text-light text-decoration-none">
+                  Menu
+                </Link>
               </li>
               <li className="mb-2">
-                <Link to="/about" className="text-light text-decoration-none">About Us</Link>
+                <Link to="/about" className="text-light text-decoration-none">
+                  About Us
+                </Link>
               </li>
               <li className="mb-2">
-                <Link to="/contact" className="text-light text-decoration-none">Contact</Link>
+                <Link to="/contact" className="text-light text-decoration-none">
+                  Contact
+                </Link>
               </li>
             </ul>
           </div>
@@ -67,14 +75,10 @@ const Footer = () => {
         <hr className="my-4" />
         <div className="row align-items-center">
           <div className="col-md-6">
-            <p className="text-light mb-0">
-              © 2024 Cafe Delight. All rights reserved.
-            </p>
+            <p className="text-light mb-0">© 2024 Cafe Delight. All rights reserved.</p>
           </div>
           <div className="col-md-6 text-md-end">
-            <p className="text-light mb-0">
-              Made with ❤️ for coffee lovers
-            </p>
+            <p className="text-light mb-0">Made with ❤️ for coffee lovers</p>
           </div>
         </div>
       </div>

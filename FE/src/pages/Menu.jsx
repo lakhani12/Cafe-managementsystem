@@ -16,7 +16,11 @@ const Menu = () => {
   const [cartItems, setCartItems] = useState({});
   const queryClient = useQueryClient();
 
-  const { data: products, isLoading, error } = useQuery({
+  const {
+    data: products,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ['products', searchTerm],
     queryFn: () => productsAPI.getAll({ q: searchTerm }),
   });
@@ -31,7 +35,7 @@ const Menu = () => {
     const cartItems = cart?.data?.cart?.items || cart?.data?.items || [];
     if (cartItems.length > 0) {
       const itemsMap = {};
-      cartItems.forEach(item => {
+      cartItems.forEach((item) => {
         itemsMap[item.product._id] = item.quantity;
       });
       setCartItems(itemsMap);
@@ -45,14 +49,15 @@ const Menu = () => {
     { id: 'beverage', name: 'Coffee & Tea', icon: '☕' },
     { id: 'bakery', name: 'Pastries', icon: '🥐' },
     { id: 'food', name: 'Sandwiches', icon: '🥪' },
-    { id: 'salad', name: 'Salads', icon: '🥗' }
+    { id: 'salad', name: 'Salads', icon: '🥗' },
   ];
 
-  const filteredProducts = products?.data?.products?.filter(product => {
-    const matchesSearch = product.title.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
-    return matchesSearch && matchesCategory && product.active;
-  }) || [];
+  const filteredProducts =
+    products?.data?.products?.filter((product) => {
+      const matchesSearch = product.title.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
+      return matchesSearch && matchesCategory && product.active;
+    }) || [];
 
   const handleAddToCart = async (productId) => {
     if (!user) {
@@ -63,9 +68,9 @@ const Menu = () => {
     try {
       await cartAPI.addItem(productId, 1);
       queryClient.invalidateQueries({ queryKey: ['cart'] });
-      setCartItems(prev => ({
+      setCartItems((prev) => ({
         ...prev,
-        [productId]: (prev[productId] || 0) + 1
+        [productId]: (prev[productId] || 0) + 1,
       }));
       toast.success('Added to cart!');
     } catch (err) {
@@ -79,8 +84,8 @@ const Menu = () => {
 
     try {
       const cartItems = cart?.data?.cart?.items || cart?.data?.items || [];
-      const cartItem = cartItems.find(item => item.product._id === productId);
-      
+      const cartItem = cartItems.find((item) => item.product._id === productId);
+
       if (!cartItem) {
         toast.error('Item not found in cart');
         return;
@@ -88,19 +93,19 @@ const Menu = () => {
 
       if (newQuantity === 0) {
         await cartAPI.removeItem(cartItem._id);
-        setCartItems(prev => {
+        setCartItems((prev) => {
           const newItems = { ...prev };
           delete newItems[productId];
           return newItems;
         });
       } else {
         await cartAPI.updateItem(cartItem._id, newQuantity);
-        setCartItems(prev => ({
+        setCartItems((prev) => ({
           ...prev,
-          [productId]: newQuantity
+          [productId]: newQuantity,
         }));
       }
-      
+
       queryClient.invalidateQueries({ queryKey: ['cart'] });
       toast.success('Cart updated!');
     } catch (err) {
@@ -137,14 +142,19 @@ const Menu = () => {
         {/* Header */}
         <div className="text-center mb-5">
           <h1 className="display-4 fw-bold text-cafe-primary mb-3">Our Menu</h1>
-          <p className="lead text-muted">Discover our delicious selection of coffee, food, and treats</p>
+          <p className="lead text-muted">
+            Discover our delicious selection of coffee, food, and treats
+          </p>
         </div>
 
         {/* Search and Filters */}
         <div className="row mb-5">
           <div className="col-lg-6 mb-4">
             <div className="position-relative">
-              <Search className="position-absolute top-50 start-0 translate-middle-y ms-3 text-muted" size={20} />
+              <Search
+                className="position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"
+                size={20}
+              />
               <Input
                 type="text"
                 placeholder="Search menu items..."
@@ -159,16 +169,18 @@ const Menu = () => {
         {/* Category Tabs */}
         <div className="mb-5">
           <div className="d-flex flex-wrap justify-content-center gap-2">
-            {categories.map(category => (
+            {categories.map((category) => (
               <Button
                 key={category.id}
-                variant={selectedCategory === category.id ? "default" : "outline"}
+                variant={selectedCategory === category.id ? 'default' : 'outline'}
                 size="lg"
                 onClick={() => setSelectedCategory(category.id)}
-                className={`px-4 py-3 ${selectedCategory === category.id ? "btn-cafe-primary" : "btn-outline-cafe-primary"}`}
+                className={`px-4 py-3 ${selectedCategory === category.id ? 'btn-cafe-primary' : 'btn-outline-cafe-primary'}`}
                 style={{ minWidth: '140px' }}
               >
-                <span className="me-2" style={{ fontSize: '1.2em' }}>{category.icon}</span>
+                <span className="me-2" style={{ fontSize: '1.2em' }}>
+                  {category.icon}
+                </span>
                 {category.name}
               </Button>
             ))}
@@ -183,12 +195,15 @@ const Menu = () => {
           </div>
         ) : (
           <div className="row g-4">
-            {filteredProducts.map(product => (
+            {filteredProducts.map((product) => (
               <div key={product._id} className="col-lg-4 col-md-6">
                 <Card className="card-cafe h-100 border-0 overflow-hidden">
                   <div className="position-relative">
                     <img
-                      src={product.images?.[0] || "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=300&h=200&fit=crop"}
+                      src={
+                        product.images?.[0] ||
+                        'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=300&h=200&fit=crop'
+                      }
                       alt={product.title}
                       className="card-img-top"
                       style={{ height: '200px', objectFit: 'cover' }}
@@ -200,7 +215,10 @@ const Menu = () => {
                     </div>
                     {product.category && (
                       <div className="position-absolute top-0 start-0 m-3">
-                        <Badge variant="outline" className="bg-white text-cafe-secondary border-cafe-secondary">
+                        <Badge
+                          variant="outline"
+                          className="bg-white text-cafe-secondary border-cafe-secondary"
+                        >
                           {product.category}
                         </Badge>
                       </div>
@@ -209,7 +227,7 @@ const Menu = () => {
                   <CardContent className="p-4">
                     <h5 className="fw-bold text-cafe-primary mb-2">{product.title}</h5>
                     <p className="text-muted mb-3">{product.description}</p>
-                    
+
                     <div className="d-flex align-items-center justify-content-between">
                       <div className="d-flex align-items-center">
                         <Star size={16} className="text-warning me-1" />
@@ -227,7 +245,9 @@ const Menu = () => {
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={() => handleUpdateQuantity(product._id, cartItems[product._id] - 1)}
+                              onClick={() =>
+                                handleUpdateQuantity(product._id, cartItems[product._id] - 1)
+                              }
                             >
                               <Minus size={16} />
                             </Button>
@@ -235,7 +255,9 @@ const Menu = () => {
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={() => handleUpdateQuantity(product._id, cartItems[product._id] + 1)}
+                              onClick={() =>
+                                handleUpdateQuantity(product._id, cartItems[product._id] + 1)
+                              }
                             >
                               <Plus size={16} />
                             </Button>
@@ -273,7 +295,9 @@ const Menu = () => {
               <CardContent className="p-4">
                 <div className="d-flex align-items-center justify-content-between">
                   <div>
-                    <h5 className="mb-1">Items in Cart: {Object.values(cartItems).reduce((a, b) => a + b, 0)}</h5>
+                    <h5 className="mb-1">
+                      Items in Cart: {Object.values(cartItems).reduce((a, b) => a + b, 0)}
+                    </h5>
                     <p className="text-muted mb-0">
                       Total: ${(cart?.data?.cart?.subtotal || cart?.data?.subtotal || 0).toFixed(2)}
                     </p>

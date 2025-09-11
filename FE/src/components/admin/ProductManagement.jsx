@@ -6,15 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Input } from '../ui/input';
 import { Badge } from '../ui/badge';
 import ProductForm from './ProductForm';
-import { 
-  Plus, 
-  Edit, 
-  Trash2, 
-  Search, 
-  Filter,
-  Eye,
-  EyeOff
-} from 'lucide-react';
+import { Plus, Edit, Trash2, Search, Filter, Eye, EyeOff } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const ProductManagement = () => {
@@ -26,10 +18,11 @@ const ProductManagement = () => {
 
   const { data: productsData, isLoading } = useQuery({
     queryKey: ['admin-products', { search: searchTerm, category: categoryFilter }],
-    queryFn: () => adminAPI.getProducts({ 
-      search: searchTerm || undefined, 
-      category: categoryFilter !== 'all' ? categoryFilter : undefined 
-    }),
+    queryFn: () =>
+      adminAPI.getProducts({
+        search: searchTerm || undefined,
+        category: categoryFilter !== 'all' ? categoryFilter : undefined,
+      }),
   });
 
   const deleteProductMutation = useMutation({
@@ -50,7 +43,7 @@ const ProductManagement = () => {
     { id: 'beverage', name: 'Beverages' },
     { id: 'bakery', name: 'Bakery' },
     { id: 'food', name: 'Food' },
-    { id: 'salad', name: 'Salads' }
+    { id: 'salad', name: 'Salads' },
   ];
 
   const handleDelete = (id) => {
@@ -73,9 +66,9 @@ const ProductManagement = () => {
   const toggleProductStatus = (product) => {
     updateProductMutation.mutate({
       id: product._id,
-      productData: { 
-        active: !product.active 
-      }
+      productData: {
+        active: !product.active,
+      },
     });
   };
 
@@ -102,10 +95,7 @@ const ProductManagement = () => {
           <h2 className="h3 fw-bold text-cafe-primary mb-1">Product Management</h2>
           <p className="text-muted mb-0">Manage your cafe's product catalog</p>
         </div>
-        <Button 
-          className="btn-cafe-primary"
-          onClick={() => setShowAddForm(true)}
-        >
+        <Button className="btn-cafe-primary" onClick={() => setShowAddForm(true)}>
           <Plus size={16} className="me-2" />
           Add Product
         </Button>
@@ -117,7 +107,10 @@ const ProductManagement = () => {
           <div className="row g-3">
             <div className="col-md-6">
               <div className="position-relative">
-                <Search size={16} className="position-absolute top-50 start-0 translate-middle-y ms-3 text-muted" />
+                <Search
+                  size={16}
+                  className="position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"
+                />
                 <Input
                   type="text"
                   placeholder="Search products..."
@@ -133,7 +126,7 @@ const ProductManagement = () => {
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
               >
-                {categories.map(category => (
+                {categories.map((category) => (
                   <option key={category.id} value={category.id}>
                     {category.name}
                   </option>
@@ -141,8 +134,8 @@ const ProductManagement = () => {
               </select>
             </div>
             <div className="col-md-2">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 className="w-100"
                 onClick={() => {
                   setSearchTerm('');
@@ -159,20 +152,23 @@ const ProductManagement = () => {
 
       {/* Products Grid */}
       <div className="row g-4">
-        {products.map(product => (
+        {products.map((product) => (
           <div key={product._id} className="col-lg-4 col-md-6">
             <Card className="card-cafe h-100">
               <div className="position-relative">
                 <img
-                  src={product.images?.[0] || "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=300&h=200&fit=crop"}
+                  src={
+                    product.images?.[0] ||
+                    'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=300&h=200&fit=crop'
+                  }
                   alt={product.title}
                   className="card-img-top"
                   style={{ height: '200px', objectFit: 'cover' }}
                 />
                 <div className="position-absolute top-0 end-0 m-2">
-                  <Badge 
-                    variant={product.active !== false ? "default" : "secondary"}
-                    className={product.active !== false ? "bg-success" : "bg-secondary"}
+                  <Badge
+                    variant={product.active !== false ? 'default' : 'secondary'}
+                    className={product.active !== false ? 'bg-success' : 'bg-secondary'}
                   >
                     {product.active !== false ? 'Active' : 'Inactive'}
                   </Badge>
@@ -186,7 +182,7 @@ const ProductManagement = () => {
               <CardContent className="p-3">
                 <h6 className="fw-bold text-cafe-primary mb-2">{product.title}</h6>
                 <p className="text-muted small mb-3 line-clamp-2">{product.description}</p>
-                
+
                 <div className="row g-2 mb-3">
                   <div className="col-6">
                     <small className="text-muted">Category:</small>
@@ -199,8 +195,8 @@ const ProductManagement = () => {
                 </div>
 
                 <div className="d-flex gap-2">
-                  <Button 
-                    size="sm" 
+                  <Button
+                    size="sm"
                     variant="outline"
                     onClick={() => setEditingProduct(product)}
                     className="flex-fill"
@@ -208,19 +204,17 @@ const ProductManagement = () => {
                     <Edit size={14} className="me-1" />
                     Edit
                   </Button>
-                  <Button 
-                    size="sm" 
+                  <Button
+                    size="sm"
                     variant="outline"
                     onClick={() => toggleProductStatus(product)}
                     className="flex-fill"
                   >
                     {product.active !== false ? <EyeOff size={14} /> : <Eye size={14} />}
-                    <span className="ms-1">
-                      {product.active !== false ? 'Hide' : 'Show'}
-                    </span>
+                    <span className="ms-1">{product.active !== false ? 'Hide' : 'Show'}</span>
                   </Button>
-                  <Button 
-                    size="sm" 
+                  <Button
+                    size="sm"
                     variant="outline"
                     className="text-danger"
                     onClick={() => handleDelete(product._id)}
@@ -240,10 +234,7 @@ const ProductManagement = () => {
           <CardContent className="text-center py-5">
             <h5 className="text-muted">No products found</h5>
             <p className="text-muted">Try adjusting your search or add a new product.</p>
-            <Button 
-              className="btn-cafe-primary"
-              onClick={() => setShowAddForm(true)}
-            >
+            <Button className="btn-cafe-primary" onClick={() => setShowAddForm(true)}>
               <Plus size={16} className="me-2" />
               Add Your First Product
             </Button>

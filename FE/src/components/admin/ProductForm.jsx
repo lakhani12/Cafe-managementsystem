@@ -16,7 +16,7 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
     category: 'beverage',
     inStock: '',
     active: true,
-    images: []
+    images: [],
   });
   const [imageUrls, setImageUrls] = useState(['']);
   const [isUploading, setIsUploading] = useState(false);
@@ -32,7 +32,7 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
         category: product.category || 'beverage',
         inStock: product.inStock?.toString() || '',
         active: product.active !== false,
-        images: product.images || []
+        images: product.images || [],
       });
       setImageUrls([product.images?.[0] || '']);
     }
@@ -64,9 +64,9 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === 'checkbox' ? checked : value,
     }));
   };
 
@@ -105,7 +105,7 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     // Validation
     if (!formData.title.trim()) {
       toast.error('Product title is required');
@@ -128,7 +128,7 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
       ...formData,
       price: parseFloat(formData.price),
       inStock: parseInt(formData.inStock),
-      images: imageUrls.filter(url => url.trim() !== '')
+      images: imageUrls.filter((url) => url.trim() !== ''),
     };
 
     if (product) {
@@ -142,7 +142,7 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
     { value: 'beverage', label: 'Beverages' },
     { value: 'bakery', label: 'Bakery' },
     { value: 'food', label: 'Food' },
-    { value: 'salad', label: 'Salads' }
+    { value: 'salad', label: 'Salads' },
   ];
 
   const isLoading = createProductMutation.isPending || updateProductMutation.isPending;
@@ -152,12 +152,10 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
       <div className="modal-dialog modal-lg">
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title">
-              {product ? 'Edit Product' : 'Add New Product'}
-            </h5>
-            <button 
-              type="button" 
-              className="btn-close" 
+            <h5 className="modal-title">{product ? 'Edit Product' : 'Add New Product'}</h5>
+            <button
+              type="button"
+              className="btn-close"
               onClick={onClose}
               disabled={isLoading}
             ></button>
@@ -177,7 +175,7 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
                     required
                   />
                 </div>
-                
+
                 {/* Category */}
                 <div className="col-md-4">
                   <label className="form-label">Category *</label>
@@ -188,7 +186,7 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
                     onChange={handleInputChange}
                     required
                   >
-                    {categories.map(category => (
+                    {categories.map((category) => (
                       <option key={category.value} value={category.value}>
                         {category.label}
                       </option>
@@ -224,7 +222,7 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
                     required
                   />
                 </div>
-                
+
                 <div className="col-md-6">
                   <label className="form-label">Stock Quantity *</label>
                   <Input
@@ -243,8 +241,17 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
                   <label className="form-label">Product Image</label>
                   <div className="mb-2 d-flex align-items-center gap-2">
                     <label className="file-upload">
-                      <input className="file-input" type="file" accept="image/*" onChange={handleFileSelect} disabled={isUploading} />
-                      <span className="file-button btn btn-outline-secondary btn-sm" aria-disabled={isUploading}>
+                      <input
+                        className="file-input"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileSelect}
+                        disabled={isUploading}
+                      />
+                      <span
+                        className="file-button btn btn-outline-secondary btn-sm"
+                        aria-disabled={isUploading}
+                      >
                         <Upload size={16} className="me-2" /> Choose file
                       </span>
                       {selectedFileName && (
@@ -286,19 +293,10 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
               </div>
             </div>
             <div className="modal-footer">
-              <Button 
-                type="button" 
-                variant="outline" 
-                onClick={onClose}
-                disabled={isLoading}
-              >
+              <Button type="button" variant="outline" onClick={onClose} disabled={isLoading}>
                 Cancel
               </Button>
-              <Button 
-                type="submit" 
-                className="btn-cafe-primary"
-                disabled={isLoading}
-              >
+              <Button type="submit" className="btn-cafe-primary" disabled={isLoading}>
                 {isLoading ? (
                   <>
                     <div className="spinner-border spinner-border-sm me-2" role="status">

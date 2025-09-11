@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
     const initAuth = async () => {
       const storedToken = localStorage.getItem('token');
       const storedUser = localStorage.getItem('user');
-      
+
       if (storedToken && storedUser) {
         setToken(storedToken);
         setUser(JSON.parse(storedUser));
@@ -33,23 +33,23 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials, isAdmin = false) => {
     try {
-      const response = isAdmin 
+      const response = isAdmin
         ? await authAPI.adminLogin(credentials)
         : await authAPI.login(credentials);
-      
+
       const { token: newToken, user: userData } = response.data;
-      
+
       localStorage.setItem('token', newToken);
       localStorage.setItem('user', JSON.stringify(userData));
-      
+
       setToken(newToken);
       setUser(userData);
-      
+
       return { success: true };
     } catch (error) {
-      return { 
-        success: false, 
-        error: error.response?.data?.message || 'Login failed' 
+      return {
+        success: false,
+        error: error.response?.data?.message || 'Login failed',
       };
     }
   };
@@ -58,18 +58,18 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await authAPI.register(userData);
       const { token: newToken, user: newUser } = response.data;
-      
+
       localStorage.setItem('token', newToken);
       localStorage.setItem('user', JSON.stringify(newUser));
-      
+
       setToken(newToken);
       setUser(newUser);
-      
+
       return { success: true };
     } catch (error) {
-      return { 
-        success: false, 
-        error: error.response?.data?.message || 'Registration failed' 
+      return {
+        success: false,
+        error: error.response?.data?.message || 'Registration failed',
       };
     }
   };
@@ -86,9 +86,9 @@ export const AuthProvider = ({ children }) => {
       await authAPI.forgotPassword(email);
       return { success: true };
     } catch (error) {
-      return { 
-        success: false, 
-        error: error.response?.data?.message || 'Failed to send reset email' 
+      return {
+        success: false,
+        error: error.response?.data?.message || 'Failed to send reset email',
       };
     }
   };
@@ -98,9 +98,9 @@ export const AuthProvider = ({ children }) => {
       await authAPI.resetPassword(token, password);
       return { success: true };
     } catch (error) {
-      return { 
-        success: false, 
-        error: error.response?.data?.message || 'Password reset failed' 
+      return {
+        success: false,
+        error: error.response?.data?.message || 'Password reset failed',
       };
     }
   };
@@ -110,9 +110,9 @@ export const AuthProvider = ({ children }) => {
       await authAPI.createAdmin(adminData);
       return { success: true };
     } catch (error) {
-      return { 
-        success: false, 
-        error: error.response?.data?.message || 'Failed to create admin' 
+      return {
+        success: false,
+        error: error.response?.data?.message || 'Failed to create admin',
       };
     }
   };
@@ -131,9 +131,5 @@ export const AuthProvider = ({ children }) => {
     isAdmin: user?.role === 'admin',
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
