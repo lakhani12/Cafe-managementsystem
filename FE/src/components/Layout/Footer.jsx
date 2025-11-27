@@ -48,15 +48,15 @@ const Footer = () => {
             <h6 className="text-cafe-primary mb-3">Contact Info</h6>
             <div className="d-flex align-items-center mb-2">
               <MapPin size={16} className="me-2 text-cafe-secondary" />
-              <span className="text-light">123 Coffee Street, City, State 12345</span>
+              <span className="text-light">1,2,3,12th flore,MBH laxuriya varachha surat,Gujarat,India</span>
             </div>
             <div className="d-flex align-items-center mb-2">
               <Phone size={16} className="me-2 text-cafe-secondary" />
-              <span className="text-light">+1 (555) 123-4567</span>
+              <span className="text-light">+91 9106182982</span>
             </div>
             <div className="d-flex align-items-center mb-2">
               <Mail size={16} className="me-2 text-cafe-secondary" />
-              <span className="text-light">info@cafedelight.com</span>
+              <span className="text-light">delightcafe@gmail.com</span>
             </div>
           </div>
 
@@ -75,7 +75,7 @@ const Footer = () => {
         <hr className="my-4" />
         <div className="row align-items-center">
           <div className="col-md-6">
-            <p className="text-light mb-0">© 2024 Cafe Delight. All rights reserved.</p>
+            <p className="text-light mb-0">© 2025 Cafe Delight. All rights reserved.</p>
           </div>
           <div className="col-md-6 text-md-end">
             <p className="text-light mb-0">Made with ❤️ for coffee lovers</p>

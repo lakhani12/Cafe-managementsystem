@@ -21,7 +21,6 @@ import {
   Trash2,
   Eye,
   ShoppingCart,
-  TrendingUp,
 } from 'lucide-react';
 import ProtectedRoute from '../../components/ProtectedRoute';
 
@@ -82,7 +81,6 @@ const AdminDashboard = () => {
     { id: 'orders', label: 'Orders', icon: ShoppingCart },
     { id: 'products', label: 'Products', icon: Package },
     { id: 'users', label: 'Users', icon: Users },
-    { id: 'reports', label: 'Reports', icon: TrendingUp },
   ];
 
   return (
@@ -248,14 +246,6 @@ const AdminDashboard = () => {
                         <Users size={16} className="me-2" />
                         Manage Users
                       </Button>
-                      <Button
-                        variant="outline"
-                        className="text-start"
-                        onClick={() => setActiveTab('reports')}
-                      >
-                        <BarChart3 size={16} className="me-2" />
-                        View Reports
-                      </Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -266,21 +256,6 @@ const AdminDashboard = () => {
           {activeTab === 'orders' && <OrderManagement />}
           {activeTab === 'products' && <ProductManagement />}
           {activeTab === 'users' && <UserManagement />}
-          {activeTab === 'reports' && (
-            <Card className="card-cafe">
-              <CardHeader>
-                <CardTitle>Reports & Analytics</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-5">
-                  <h5 className="text-muted">Reports Coming Soon</h5>
-                  <p className="text-muted">
-                    Advanced analytics and reporting features will be available here.
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          )}
         </div>
       </div>
     </ProtectedRoute>

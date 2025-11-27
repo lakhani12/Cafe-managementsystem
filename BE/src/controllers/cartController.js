@@ -1,6 +1,7 @@
 import createError from 'http-errors';
 import { Cart } from '../models/Cart.js';
 import { Product } from '../models/Product.js';
+import { mapImagesToAbsolute } from '../utils/url.js';
 
 const getOrCreateCart = async (userId) => {
   let cart = await Cart.findOne({ user: userId });
@@ -8,10 +9,35 @@ const getOrCreateCart = async (userId) => {
   return cart;
 };
 
+const populateCart = async (cart) => {
+  if (!cart) return cart;
+  await cart.populate({
+    path: 'items.product',
+    select: 'title description images price category active',
+  });
+  return cart;
+};
+
+const formatCartResponse = (cartDoc, req) => {
+  if (!cartDoc) return cartDoc;
+  const cart = cartDoc.toObject({ virtuals: true });
+  cart.items = cart.items.map((item) => ({
+    ...item,
+    product: item.product
+      ? {
+          ...item.product,
+          images: mapImagesToAbsolute(req, item.product.images),
+        }
+      : item.product,
+  }));
+  return cart;
+};
+
 export const getCart = async (req, res, next) => {
   try {
     const cart = await getOrCreateCart(req.user._id);
-    res.json({ success: true, cart });
+    await populateCart(cart);
+    res.json({ success: true, cart: formatCartResponse(cart, req) });
   } catch (err) {
     next(err);
   }
@@ -28,7 +54,8 @@ export const addToCart = async (req, res, next) => {
     else cart.items.push({ product: product._id, quantity: quantity || 1, price: product.price });
     cart.recalculate();
     await cart.save();
-    res.status(201).json({ success: true, cart });
+    await populateCart(cart);
+    res.status(201).json({ success: true, cart: formatCartResponse(cart, req) });
   } catch (err) {
     next(err);
   }
@@ -44,7 +71,8 @@ export const updateCartItem = async (req, res, next) => {
     item.quantity = quantity;
     cart.recalculate();
     await cart.save();
-    res.json({ success: true, cart });
+    await populateCart(cart);
+    res.json({ success: true, cart: formatCartResponse(cart, req) });
   } catch (err) {
     next(err);
   }
@@ -59,7 +87,8 @@ export const removeCartItem = async (req, res, next) => {
     cart.items.splice(itemIndex, 1);
     cart.recalculate();
     await cart.save();
-    res.json({ success: true, cart });
+    await populateCart(cart);
+    res.json({ success: true, cart: formatCartResponse(cart, req) });
   } catch (err) {
     next(err);
   }
@@ -71,7 +100,8 @@ export const clearCart = async (req, res, next) => {
     cart.items = [];
     cart.recalculate();
     await cart.save();
-    res.json({ success: true, cart });
+    await populateCart(cart);
+    res.json({ success: true, cart: formatCartResponse(cart, req) });
   } catch (err) {
     next(err);
   }
